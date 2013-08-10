@@ -1,0 +1,33 @@
+<h1>Listing recorders</h1>
+
+<table>
+  <tr>
+    <th>Category</th>
+    <th>Query</th>
+    <th>Oauth access token</th>
+    <th>Oauth access secret</th>
+    <th>Status</th>
+    <th>Running</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @recorders.each do |recorder| %>
+  <tr>
+    <td><%= recorder.category %></td>
+    <td><%= recorder.query %></td>
+    <td><%= recorder.oauth_access_token %></td>
+    <td><%= recorder.oauth_access_secret %></td>
+    <td><%= recorder.status %></td>
+    <td><%= recorder.running %></td>
+    <td><%= link_to 'Show', recorder %></td>
+    <td><%= link_to 'Edit', edit_recorder_path(recorder) %></td>
+    <td><%= link_to 'Destroy', recorder, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Recorder', new_recorder_path %>

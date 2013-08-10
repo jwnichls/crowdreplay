@@ -1,0 +1,30 @@
+<script type="text/javascript">
+function showGraph(vizData,max){
+	try{
+   g = new Dygraph(
+       document.getElementById("graphdiv"),
+       vizData,{
+       	 labels:["time","<%=h @category1.category %>","<%=h @category2.category %>"],
+         valueRange: [0,max],
+		 
+		 clickCallback: function(e, x, pts) {
+			
+		 	var date = new Date(x);
+		 }
+       }
+   );
+	}
+	catch(ex)
+	{
+		alert(ex.toSource());
+	}
+}
+
+function showInitialGraph(){
+	var vizData = <% for vol_value in showgraph2func -%>"<%=h vol_value[:time] %>,<%=h vol_value[:count1] %>,<%=h vol_value[:count2] %>\n" +
+                  <% end %>"";
+	showGraph(vizData, <%= @max %>);
+}
+
+addEventListener("load",function() { showInitialGraph() }, true);
+</script>

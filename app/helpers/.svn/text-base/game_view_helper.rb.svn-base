@@ -1,0 +1,2 @@
+module GameViewHelper
+end

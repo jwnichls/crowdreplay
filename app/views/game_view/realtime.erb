@@ -1,0 +1,42 @@
+<%= javascript_include_tag :defaults %>
+<%=  javascript_include_tag "dygraph-combined.js" %>
+
+<h1>Realtime Game View</h1>
+
+<div id="graphdiv" style="width:1000px; height:400px;"></div>
+
+<script type="text/javascript">
+function showGraph(){
+	try{
+			
+   		g = new Dygraph(
+       		document.getElementById("graphdiv"),
+			'<%= url_for(:controller => 'game_view', :action => 'graphdata', :category => @category.category) %>',
+			{
+       	 		labels:["time","volume"],
+		 		clickCallback: function(e, x, pts) {
+		 			var date = new Date(x);
+		
+					$("#tweets").load('<%= url_for(:controller => 'game_view', :action => 'tweets_at_time', :category => @category.category) %>', 
+									  'time=' + encodeURIComponent(date.toString()))
+				}
+       		}
+   		);
+		
+	}
+	catch(ex)
+	{
+		alert(ex.toSource());
+	}
+}
+
+function showRealtimeGraph(){
+	setInterval(showGraph,60000);
+	
+	showGraph();
+}
+
+$(showRealtimeGraph);
+</script>
+
+<div id="tweets"></div>

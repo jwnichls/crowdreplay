@@ -1,0 +1,3 @@
+class RateLimit < ActiveRecord::Base
+  belongs_to :tweet_category
+end

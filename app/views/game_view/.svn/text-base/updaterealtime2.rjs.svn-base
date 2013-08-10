@@ -1,0 +1,1 @@
+page.call 'showGraph', @argString, @max

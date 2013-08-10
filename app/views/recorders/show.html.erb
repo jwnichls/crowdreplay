@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Category:</b>
+  <%= @recorder.category %>
+</p>
+
+<p>
+  <b>Query:</b>
+  <%= @recorder.query %>
+</p>
+
+<p>
+  <b>Oauth access token:</b>
+  <%= @recorder.oauth_access_token %>
+</p>
+
+<p>
+  <b>Oauth access secret:</b>
+  <%= @recorder.oauth_access_secret %>
+</p>
+
+<p>
+  <b>Status:</b>
+  <%= @recorder.status %>
+</p>
+
+<p>
+  <b>Running:</b>
+  <%= @recorder.running %>
+</p>
+
+
+<%= link_to 'Edit', edit_recorder_path(@recorder) %> |
+<%= link_to 'Back', recorders_path %>

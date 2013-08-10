@@ -1,0 +1,13 @@
+<%= javascript_include_tag :defaults %>
+<%=  javascript_include_tag "dygraph-combined.js" %>
+
+<h1>Realtime Game View</h1>
+
+<div id="graphdiv" style="width:1000px; height:400px;"></div>
+
+<%= render :partial => 'showgraphfunc', :object => @volumes %>
+
+<%= periodically_call_remote(:frequency => 60,
+                             :url => {:controller => :game_view, :action => :updaterealtime, :category => @category.category}) %>
+
+<div id="tweets"></div>

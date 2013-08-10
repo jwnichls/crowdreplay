@@ -1,0 +1,41 @@
+<%= form_for(@recorder) do |f| %>
+  <% if @recorder.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@recorder.errors.count, "error") %> prohibited this recorder from being saved:</h2>
+
+      <ul>
+      <% @recorder.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :category %><br />
+    <%= f.text_field :category %>
+  </div>
+  <div class="field">
+    <%= f.label :query %><br />
+    <%= f.text_field :query %>
+  </div>
+  <div class="field">
+    <%= f.label :oauth_access_token %><br />
+    <%= f.text_field :oauth_access_token %>
+  </div>
+  <div class="field">
+    <%= f.label :oauth_access_secret %><br />
+    <%= f.text_field :oauth_access_secret %>
+  </div>
+  <div class="field">
+    <%= f.label :status %><br />
+    <%= f.text_field :status %>
+  </div>
+  <div class="field">
+    <%= f.label :running %><br />
+    <%= f.check_box :running %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  category: MyString
+  query: MyString
+  oauth_access_token: MyString
+  oauth_access_secret: MyString
+  status: MyString
+  running: false
+
+two:
+  category: MyString
+  query: MyString
+  oauth_access_token: MyString
+  oauth_access_secret: MyString
+  status: MyString
+  running: false

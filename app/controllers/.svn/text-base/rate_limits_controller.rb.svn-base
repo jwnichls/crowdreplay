@@ -1,0 +1,83 @@
+class RateLimitsController < ApplicationController
+  # GET /rate_limits
+  # GET /rate_limits.xml
+  def index
+    @rate_limits = RateLimit.all
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.xml  { render :xml => @rate_limits }
+    end
+  end
+
+  # GET /rate_limits/1
+  # GET /rate_limits/1.xml
+  def show
+    @rate_limit = RateLimit.find(params[:id])
+
+    respond_to do |format|
+      format.html # show.html.erb
+      format.xml  { render :xml => @rate_limit }
+    end
+  end
+
+  # GET /rate_limits/new
+  # GET /rate_limits/new.xml
+  def new
+    @rate_limit = RateLimit.new
+
+    respond_to do |format|
+      format.html # new.html.erb
+      format.xml  { render :xml => @rate_limit }
+    end
+  end
+
+  # GET /rate_limits/1/edit
+  def edit
+    @rate_limit = RateLimit.find(params[:id])
+  end
+
+  # POST /rate_limits
+  # POST /rate_limits.xml
+  def create
+    @rate_limit = RateLimit.new(params[:rate_limit])
+
+    respond_to do |format|
+      if @rate_limit.save
+        format.html { redirect_to(@rate_limit, :notice => 'RateLimit was successfully created.') }
+        format.xml  { render :xml => @rate_limit, :status => :created, :location => @rate_limit }
+      else
+        format.html { render :action => "new" }
+        format.xml  { render :xml => @rate_limit.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+
+  # PUT /rate_limits/1
+  # PUT /rate_limits/1.xml
+  def update
+    @rate_limit = RateLimit.find(params[:id])
+
+    respond_to do |format|
+      if @rate_limit.update_attributes(params[:rate_limit])
+        format.html { redirect_to(@rate_limit, :notice => 'RateLimit was successfully updated.') }
+        format.xml  { head :ok }
+      else
+        format.html { render :action => "edit" }
+        format.xml  { render :xml => @rate_limit.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /rate_limits/1
+  # DELETE /rate_limits/1.xml
+  def destroy
+    @rate_limit = RateLimit.find(params[:id])
+    @rate_limit.destroy
+
+    respond_to do |format|
+      format.html { redirect_to(rate_limits_url) }
+      format.xml  { head :ok }
+    end
+  end
+end
