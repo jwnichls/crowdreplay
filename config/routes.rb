@@ -23,4 +23,7 @@ Crowdreplay::Application.routes.draw do
   
   # Authentication URLs for Omniauth
   match '/auth/:provider/callback' => 'recorders#auth_redirect'
+  
+  # Map the root
+  root :to => 'recorders#index'
 end
