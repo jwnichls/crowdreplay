@@ -19,6 +19,6 @@ production:
     adapter: mysql2
     database: crowdreplay_production
     username: crowdreplay
-    password: jefftest
+    password: blah78
     pool: 5
     timeout: 5000
