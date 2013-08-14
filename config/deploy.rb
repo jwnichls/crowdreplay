@@ -1,3 +1,5 @@
+require "dotenv/capistrano"
+
 set :application, "crowdreplay"
 set :deploy_to, "/home/jwnichls/web/crowdreplay"
 set :use_sudo, false

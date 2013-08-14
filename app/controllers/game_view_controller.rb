@@ -16,7 +16,7 @@ class GameViewController < ApplicationController
       end
 
       @endtime = 1.minutes.ago.utc.change(:sec => 0)
-      @starttime = 91.minutes.ago.utc.change(:sec => 0)
+      @starttime = 121.minutes.ago.utc.change(:sec => 0)
 
       if !params[:starttime].nil?
         @starttime = DateTime.parse(params[:starttime]).utc
@@ -90,6 +90,8 @@ class GameViewController < ApplicationController
     
     @endtime = @time.advance(:minutes => 1)
     @tweets = @category.tweets.find(:all, :conditions => ["created_at >= ? AND created_at < ? AND lang = ?", @time, @endtime, "en"])
+    
+    render layout: nil
   end
   
   private

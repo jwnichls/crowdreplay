@@ -11,6 +11,10 @@
     </div>
   <% end %>
 
+  <%= f.hidden_field :oauth_access_token %>
+  <%= f.hidden_field :oauth_access_secret %>
+  <%= f.hidden_field :screen_name %>
+
   <div class="field">
     <%= f.label :category %><br />
     <%= f.text_field :category %>
@@ -20,21 +24,16 @@
     <%= f.text_field :query %>
   </div>
   <div class="field">
-    <%= f.label :oauth_access_token %><br />
-    <%= f.text_field :oauth_access_token %>
+	<% if @recorder.screen_name %>
+		<b>Twitter Account</b>: <%= @recorder.screen_name %><br/>
+	<% end -%>
+	<%= f.submit 'Select Twitter Account' %>
   </div>
-  <div class="field">
-    <%= f.label :oauth_access_secret %><br />
-    <%= f.text_field :oauth_access_secret %>
-  </div>
-  <div class="field">
-    <%= f.label :status %><br />
-    <%= f.text_field :status %>
-  </div>
-  <div class="field">
-    <%= f.label :running %><br />
-    <%= f.check_box :running %>
-  </div>
+  <% if @recorder.status %>
+	<div>
+	  <b>Status:</b> <%= @recorder.status %>
+	</div>
+  <% end -%>
   <div class="actions">
     <%= f.submit %>
   </div>

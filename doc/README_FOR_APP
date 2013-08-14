@@ -1,11 +1,8 @@
 TODO:
 
 * Capistrano deployment
-   - create and import app into github
    - create the appropriate directories and configuration on server
+* Improved UI for navigating around the application
 * omniauth twitter for recorder tokens
-* Build recording interface in rails that fills in a database table
-* Build Java recorder that runs as daemon, reads table, and runs all requested recorders
-* Slightly nicer UI for navigating around the application
 * Record the actual tweets into a file instead of the database (just store basic meta-data in the database)
    - Probably store the tweets in per minute files

@@ -1,13 +1,22 @@
-<h1>Listing recorders</h1>
+<script>
+	function refreshRecorders() {
+		document.location.reload();
+	}
+	
+	function initRefresh() {
+		setInterval(refreshRecorders, 5000);
+	}
+	
+	$(initRefresh);
+</script>
 
 <table>
   <tr>
-    <th>Category</th>
+    <th>Name</th>
     <th>Query</th>
-    <th>Oauth access token</th>
-    <th>Oauth access secret</th>
+    <th>Account</th>
     <th>Status</th>
-    <th>Running</th>
+	<th></th>
     <th></th>
     <th></th>
     <th></th>
@@ -17,13 +26,21 @@
   <tr>
     <td><%= recorder.category %></td>
     <td><%= recorder.query %></td>
-    <td><%= recorder.oauth_access_token %></td>
-    <td><%= recorder.oauth_access_secret %></td>
+    <td><%= recorder.screen_name %></td>
     <td><%= recorder.status %></td>
-    <td><%= recorder.running %></td>
-    <td><%= link_to 'Show', recorder %></td>
+	<td>
+		<% if recorder.running -%>
+			<%= link_to 'View Data', :controller => "game_view", :action => "realtime", :category => recorder.category %>
+		<% end -%>
+	</td>
     <td><%= link_to 'Edit', edit_recorder_path(recorder) %></td>
-    <td><%= link_to 'Destroy', recorder, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+	<td>
+		<% if recorder.running or recorder.status == "Starting" -%>
+			<%= link_to 'Stop', stop_recorder_path(recorder) %>
+		<% else -%>
+			<%= link_to 'Start', start_recorder_path(recorder) %>
+		<% end -%>
+	</td>
   </tr>
 <% end %>
 </table>
