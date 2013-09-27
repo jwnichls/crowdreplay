@@ -8,7 +8,7 @@ class RecordersController < ApplicationController
   # GET /recorders/new
   # GET /recorders/new.json
   def new
-    if session[:recorder]
+    if session[:recorder] and session[:recorder].id != nil
       @recorder = session[:recorder]
       session[:recorder] = nil
     else
@@ -21,7 +21,7 @@ class RecordersController < ApplicationController
 
   # GET /recorders/1/edit
   def edit
-    if session[:recorder]
+    if session[:recorder] and session[:recorder].id != nil
       @recorder = session[:recorder]
       session[:recorder] = nil
     else
