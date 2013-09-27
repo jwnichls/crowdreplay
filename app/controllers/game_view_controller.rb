@@ -15,8 +15,8 @@ class GameViewController < ApplicationController
         @category = TweetCategory.find_by_category(params[:category])
       end
 
-      @endtime = 1.minutes.ago.utc.change(:sec => 0)
-      @starttime = 121.minutes.ago.utc.change(:sec => 0)
+      @endtime = 2.minutes.ago.utc.change(:sec => 0)
+      @starttime = 122.minutes.ago.utc.change(:sec => 0)
 
       if !params[:starttime].nil?
         @starttime = DateTime.parse(params[:starttime]).utc
@@ -48,8 +48,8 @@ class GameViewController < ApplicationController
         @category = TweetCategory.find_by_category(params[:category])
       end
 
-      @endtime = 1.minutes.ago.utc.change(:sec => 0)
-      @starttime = 121.minutes.ago.utc.change(:sec => 0)
+      @endtime = 2.minutes.ago.utc.change(:sec => 0)
+      @starttime = 122.minutes.ago.utc.change(:sec => 0)
 
       if !params[:starttime].nil?
         @starttime = DateTime.parse(params[:starttime]).utc
