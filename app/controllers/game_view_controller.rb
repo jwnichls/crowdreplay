@@ -97,6 +97,8 @@ class GameViewController < ApplicationController
   private
   
   def calculate_and_cache_volumes(category, starttime, endtime)
+    
+    recorder = Recorder.find_by_category(category.category)
     starttime = starttime.change(:sec => 0)
     endtime = endtime.change(:sec => 0)   
     difference = (endtime.to_i - starttime.to_i) / 60
@@ -125,6 +127,9 @@ class GameViewController < ApplicationController
         
         vol = category.tweet_volumes.create(:time => timecounter, :count => count)
         vol.save
+      elsif recorder && recorder.running
+        # don't calculate our own volumes at the end of the recording phase if the recorder is running
+        return
       end
       
       timecounter = nexttime
