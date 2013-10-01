@@ -83,17 +83,21 @@ class GameViewController < ApplicationController
   def tweets_at_time
     @category = TweetCategory.find_by_category(params[:category]) 
 
-    @time = 1.minutes.ago.utc
-    if !params[:time].nil?
-      @time = DateTime.parse(params[:time]).utc
-    end
+    if params[:time].nil? && params[:endtime].nil?
+      @tweets = @category.tweets.all
+    else
+      @time = 1.minutes.ago.utc
+      if !params[:time].nil?
+        @time = DateTime.parse(params[:time]).utc
+      end
 
-    @endtime = @time.advance(:minutes => 1)    
-    if !params[:endtime].nil?
-      @endtime = DateTime.parse(params[:endtime]).utc
-    end
+      @endtime = @time.advance(:minutes => 1)    
+      if !params[:endtime].nil?
+        @endtime = DateTime.parse(params[:endtime]).utc
+      end
     
-    @tweets = @category.tweets.find(:all, :conditions => ["created_at >= ? AND created_at < ? AND lang = ?", @time, @endtime, "en"])
+      @tweets = @category.tweets.find(:all, :conditions => ["created_at >= ? AND created_at < ? AND lang = ?", @time, @endtime, "en"])
+    end
     
     respond_to do |format|
       format.html { render layout: nil }
