@@ -87,11 +87,18 @@ class GameViewController < ApplicationController
     if !params[:time].nil?
       @time = DateTime.parse(params[:time]).utc
     end
+
+    @endtime = @time.advance(:minutes => 1)    
+    if !params[:endtime].nil?
+      @endtime = DateTime.parse(params[:endtime]).utc
+    end
     
-    @endtime = @time.advance(:minutes => 1)
     @tweets = @category.tweets.find(:all, :conditions => ["created_at >= ? AND created_at < ? AND lang = ?", @time, @endtime, "en"])
     
-    render layout: nil
+    respond_to do |format|
+      format.html { render layout: nil }
+      format.csv { render text: Tweet.generate_csv(@tweets, ["id", "screenname", "user_id", "text", "created_at"]) }
+    end
   end
   
   private
