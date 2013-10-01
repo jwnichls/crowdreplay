@@ -83,25 +83,27 @@ class GameViewController < ApplicationController
   def tweets_at_time
     @category = TweetCategory.find_by_category(params[:category]) 
 
-    if params[:time].nil? && params[:endtime].nil?
-      @tweets = @category.tweets.all
-    else
-      @time = 1.minutes.ago.utc
-      if !params[:time].nil?
-        @time = DateTime.parse(params[:time]).utc
-      end
+    filters = nil
 
-      @endtime = @time.advance(:minutes => 1)    
+    if !params[:time].nil?
+      @time = DateTime.parse(params[:time]).utc
+
       if !params[:endtime].nil?
         @endtime = DateTime.parse(params[:endtime]).utc
+      else
+        @endtime = @time.advance(:minutes => 1)
       end
-    
-      @tweets = @category.tweets.find(:all, :conditions => ["created_at >= ? AND created_at < ? AND lang = ?", @time, @endtime, "en"])
+
+      filters = ["created_at >= ? AND created_at < ? AND lang = ?", @time, @endtime, "en"]
+    end
+
+    if params[:format] != "csv"
+      @tweets = @category.tweets.where(filters)
     end
     
     respond_to do |format|
       format.html { render layout: nil }
-      format.csv { render text: Tweet.generate_csv(@tweets, ["id", "screenname", "user_id", "text", "created_at"]) }
+      format.csv { render_csv(["id", "screenname", "user_id", "text", "created_at"], filters) }
     end
   end
   
@@ -154,5 +156,43 @@ class GameViewController < ApplicationController
     end
     
     return volumes
+  end
+  
+  # CSV Stuff from:
+  # http://smsohan.com/blog/2013/05/09/genereating-and-streaming-potentially-large-csv-files-using-ruby-on-rails/
+  def render_csv(fields, filters)
+    set_file_headers
+    set_streaming_headers
+
+    response.status = 200
+
+    #setting the body to an enumerator, rails will iterate this enumerator
+    self.response_body = csv_lines(fields, filters)
+  end
+
+  def set_file_headers
+    file_name = @category.category + ".csv"
+    headers["Content-Type"] = "text/csv"
+    headers["Content-disposition"] = "attachment; filename=\"#{file_name}\""
+  end
+
+  def set_streaming_headers
+    #nginx doc: Setting this to "no" will allow unbuffered responses suitable for Comet and HTTP streaming applications
+    headers['X-Accel-Buffering'] = 'no'
+
+    headers["Cache-Control"] ||= "no-cache"
+    headers.delete("Content-Length")
+  end
+
+  def csv_lines(fields, filters)
+
+    Enumerator.new do |y|
+      y << Tweet.csv_header(fields).to_s
+
+      #ideally you'd validate the params, skipping here for brevity
+      @category.tweets.where(filters).find_each(batch_size: 200) do |tweet|
+        y << tweet.to_csv_row(fields).to_s
+      end
+    end
   end
 end
