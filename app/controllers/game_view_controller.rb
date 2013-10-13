@@ -4,6 +4,8 @@ class GameViewController < ApplicationController
       @event = Event.find_by_id(params[:eventid])
       
       @category = TweetCategory.find_by_id(@event.category_id)
+      Tweet.use_category(@category)
+      
       @starttime = @event.start_time
       @endtime = @event.end_time
     else 
@@ -14,6 +16,8 @@ class GameViewController < ApplicationController
       else
         @category = TweetCategory.find_by_category(params[:category])
       end
+      
+      Tweet.use_category(@category)
 
       @endtime = 2.minutes.ago.utc.change(:sec => 0)
       @starttime = 122.minutes.ago.utc.change(:sec => 0)
@@ -37,6 +41,7 @@ class GameViewController < ApplicationController
       @event = Event.find_by_id(params[:eventid])
       
       @category = TweetCategory.find_by_id(@event.category_id)
+      Tweet.use_category(@category)
       @starttime = @event.start_time
       @endtime = @event.end_time
     else 
@@ -47,6 +52,7 @@ class GameViewController < ApplicationController
       else
         @category = TweetCategory.find_by_category(params[:category])
       end
+      Tweet.use_category(@category)
 
       @endtime = 2.minutes.ago.utc.change(:sec => 0)
       @starttime = 122.minutes.ago.utc.change(:sec => 0)
@@ -64,9 +70,7 @@ class GameViewController < ApplicationController
       @event.end_time = @endtime
     end
     
-    calculate_and_cache_volumes(@category,@starttime,@endtime)
-
-    @volumes = @category.tweet_volumes.find(:all, :conditions => ["time >= ? AND time <= ?", @starttime, @endtime])
+    @volumes = calculate_and_cache_volumes(@category,@starttime,@endtime)
     @max = @category.tweet_volumes.maximum(:count, :conditions => ["time >= ? AND time <= ?", @starttime, @endtime]) + 10
     
     render layout: nil
@@ -78,10 +82,12 @@ class GameViewController < ApplicationController
     else
       @category = TweetCategory.find_by_category(params[:category])
     end
+    Tweet.use_category(@category)
   end
 
   def tweets_at_time
     @category = TweetCategory.find_by_category(params[:category]) 
+    Tweet.use_category(@category)
 
     filters = nil
 
@@ -116,37 +122,27 @@ class GameViewController < ApplicationController
     endtime = endtime.change(:sec => 0)   
     difference = (endtime.to_i - starttime.to_i) / 60
 
+    volumes = [] # @category.tweet_volumes.find(:all, :conditions => ["time >= ? AND time <= ?", starttime, endtime])
+    
     timecounter = starttime.clone
     0.upto(difference) { |m| 
 	
       nexttime = timecounter.advance(:minutes => 1)
       vol = category.tweet_volumes.find_by_time(timecounter)
 
-      # logger.info("vol.time=#{vol.time}") unless vol.nil?
-      
       if vol.nil?
-        #logger.info("timecounter=#{timecounter}")
-      	#logger.info("nexttime=#{nexttime}")
-
-        # count = category.tweets.find(:all, :conditions => ["tweets.created_at >= ? AND tweets.created_at < ?", timecounter, nexttime]).count
-        count = Tweet.count(:joins => "inner join tweet_categories_tweets on tweets.id = tweet_categories_tweets.tweet_id",
-                            :conditions => ["tweets.created_at >= ? AND tweets.created_at < ? AND tweet_categories_tweets.tweet_category_id = ?", timecounter, nexttime, category.id])
-        #logger.info("count=#{count}")
-        count += category.rate_limits.sum(:skipcount, :conditions => ["rate_limits.created_at >= ? AND rate_limits.created_at < ?", timecounter, nexttime])
-        
-        #if count <= 0
-        #  count = Math.log10(count).round
-        #end
-        
-        vol = category.tweet_volumes.create(:time => timecounter, :count => count)
-        vol.save
-      elsif recorder && recorder.running
-        # don't calculate our own volumes at the end of the recording phase if the recorder is running
-        return
+        vol = TweetVolume.new
+        vol.time = timecounter
+        vol.tweet_category_id = category.id
+        vol.count = 0        
       end
       
+      volumes.push(vol)
+      
       timecounter = nexttime
-    }    
+    }
+    
+    return volumes
   end
   
   def assemble_two_volume_array(vol1, vol2)

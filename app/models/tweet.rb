@@ -1,6 +1,6 @@
 class Tweet < ActiveRecord::Base
   attr_accessible :text, :created_at, :screenname, :user_id, :updated_at, :lang, :json
-  has_and_belongs_to_many :tweet_categories
+  belongs_to :tweet_categories
   
   # From:
   # http://railscasts.com/episodes/362-exporting-csv-and-excel?view=comments
@@ -26,4 +26,29 @@ class Tweet < ActiveRecord::Base
     CSV::Row.new(fields, self.attributes.values_at(*fields))
   end
 
+  def self.clear_table_name_suffix
+    if self.table_name_suffix and self.table_name_suffix != ""
+      self.table_name = table_name[0,self.table_name.length-self.table_name_suffix.length]
+      self.table_name_suffix = ""
+    end
+  end
+
+  def self.use_category(category)
+    self.table_name
+    
+    if self.table_name_suffix and self.table_name_suffix.length > 0
+      self.clear_table_name_suffix
+    end
+    
+    if category
+      self.table_name_suffix = "_" + category.id.to_s
+      old_table_name = self.table_name
+      self.table_name = self.table_name.to_s + self.table_name_suffix.to_s
+      
+      if !ActiveRecord::Base.connection.table_exists?(self.table_name)
+        puts "Create table here " + self.table_name + " like " + old_table_name
+        ActiveRecord::Base.connection.execute("create table #{self.quoted_table_name} like `#{old_table_name}`")
+      end
+    end
+  end
 end
