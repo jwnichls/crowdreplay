@@ -71,7 +71,7 @@ class GameViewController < ApplicationController
     end
     
     @volumes = calculate_and_cache_volumes(@category,@starttime,@endtime)
-    @max = @category.tweet_volumes.maximum(:count, :conditions => ["time >= ? AND time <= ?", @starttime, @endtime]) + 10
+    @max = @volumes.max_by(&:count).count + 10
     
     render layout: nil
   end
@@ -122,23 +122,24 @@ class GameViewController < ApplicationController
     endtime = endtime.change(:sec => 0)   
     difference = (endtime.to_i - starttime.to_i) / 60
 
-    volumes = [] # @category.tweet_volumes.find(:all, :conditions => ["time >= ? AND time <= ?", starttime, endtime])
+    volumes = category.tweet_volumes.find(:all, :conditions => ["time >= ? AND time <= ?", starttime, endtime])
     
     timecounter = starttime.clone
+    volcounter = 0
     0.upto(difference) { |m| 
 	
       nexttime = timecounter.advance(:minutes => 1)
-      vol = category.tweet_volumes.find_by_time(timecounter)
 
-      if vol.nil?
+	    if volcounter >= volumes.length or volumes[volcounter].time != timecounter
         vol = TweetVolume.new
         vol.time = timecounter
         vol.tweet_category_id = category.id
-        vol.count = 0        
+        vol.count = 0
+        
+        volumes.insert(volcounter, vol)
       end
       
-      volumes.push(vol)
-      
+	    volcounter = volcounter + 1
       timecounter = nexttime
     }
     
