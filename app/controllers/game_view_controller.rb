@@ -117,7 +117,6 @@ class GameViewController < ApplicationController
   
   def calculate_and_cache_volumes(category, starttime, endtime)
     
-    recorder = Recorder.find_by_category(category.category)
     starttime = starttime.change(:sec => 0)
     endtime = endtime.change(:sec => 0)   
     difference = (endtime.to_i - starttime.to_i) / 60
