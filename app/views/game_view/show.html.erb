@@ -5,6 +5,12 @@
 	<%= link_to "CSV", :controller => "game_view", :action => "tweets_at_time", :format => "csv", :category => @category.category, :time => @starttime, :endtime => @endtime %> -->
 </p>
 
+<p>
+	<i>Start of Data:</i> <%= @category.tweets.minimum('created_at') %><br/>
+	<i>End of Data:</i> <%= @category.tweets.maximum('created_at') %><br/>
+	<i>Total # of Tweets:</i> <%= @category.tweets.count %><br/>
+</p>
+
 <div id="graphdiv" style="width:1000px; height:400px;"></div>
 
 <table>
