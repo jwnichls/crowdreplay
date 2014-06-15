@@ -129,7 +129,12 @@ class GameViewController < ApplicationController
 	
       nexttime = timecounter.advance(:minutes => 1)
 
-	    if volcounter >= volumes.length or volumes[volcounter].time != timecounter
+      while volcounter < volumes.length and volumes[volcounter].time < timecounter
+        # somehow we ended up with more than one measurement at a time we already considered
+        volumes.delete_at(volcounter)        
+      end
+
+	    if volcounter >= volumes.length or volumes[volcounter].time > timecounter
         vol = TweetVolume.new
         vol.time = timecounter
         vol.tweet_category_id = category.id
