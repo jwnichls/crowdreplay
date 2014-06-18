@@ -55,6 +55,6 @@ module Crowdreplay
     config.active_record.whitelist_attributes = true
 
     # Disable the asset pipeline
-    config.assets.enabled = false
+    config.assets.enabled = true
   end
 end
