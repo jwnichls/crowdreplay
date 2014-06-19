@@ -1,43 +1,47 @@
 <%=  javascript_include_tag "dygraph-combined.js" %>
 
-<p>
-	<%= link_to "Switch to Real Time View", :controller => "game_view", :action => "realtime", :category => @category.category %> -
-	<%= link_to "CSV", :controller => "game_view", :action => "tweets_at_time", :format => "csv", :category => @category.category, :time => @starttime, :endtime => @endtime %>
-</p>
+<div class="row">
+	<p>
+		<%= link_to "Switch to Real Time View", :controller => "game_view", :action => "realtime", :category => @category.category %> -
+	</p>
+</div>
 
-<p>
-	<i>Start of Data:</i> <%= @category.tweets.minimum('created_at') %><br/>
-	<i>End of Data:</i> <%= @category.tweets.maximum('created_at') %><br/>
-	<i>Total # of Tweets:</i> <%= @category.tweets.count %><br/>
-</p>
+<div class="row">
+	<p>
+		<i>Start of Data:</i> <%= @category.tweets.minimum('created_at') %><br/>
+		<i>End of Data:</i> <%= @category.tweets.maximum('created_at') %><br/>
+		<i>Total # of Tweets:</i> <%= @category.tweets.count %><br/>
+	</p>
+</div>
 
-<div id="graphdiv" style="width:1000px; height:400px;"></div>
+<div class="row">
+	<div id="graphdiv" style="width:100%; height:400px;"></div>
+</div>
 
-<table>
-	<tr>
-		<td valign="top">
-			<h3>Change viewing parameters</h3>
-<%= form_tag(:controller => 'game_view', :action => :show) do -%>
-<p><label for="category">Category: </label> <%= text_field_tag 'category', @category.category %></p>
-<p><label for="starttime">Start Time: </label> <%= text_field_tag 'starttime', @starttime %></p>
-<p><label for="endtime">End Time: </label> <%= text_field_tag 'endtime', @endtime %></p>
-<p><%= submit_tag 'Submit New Times' %></p>
-<% end -%>
-		</td>
-		<td width="50"></td>
-		<td valign="top">
-			<h3>Create an event here</h3>
+<div class="row">
+	<div class="col-md-6">
+		<h4>Change viewing parameters</h4>
+		<%= form_tag(:controller => 'game_view', :action => :show) do -%>
+		<div class="form-group"><label for="category" class="control-label">Category: </label> <%= text_field_tag 'category', @category.category, :class => "form-control" %></div>
+		<div class="form-group"><label for="starttime" class="control-label">Start Time: </label> <%= text_field_tag 'starttime', @starttime, :class => "form-control" %></div>
+		<div class="form-group"><label for="endtime" class="control-label">End Time: </label> <%= text_field_tag 'endtime', @endtime, :class => "form-control" %></div>
+		<div class="form-actions"><%= submit_tag 'Submit New Times', :class => 'btn btn-primary' %></div>
+		<% end -%>
+	</div>
+	<div class="col-md-6">
+		<% if current_user and current_user.admin? -%>
+			<h4>Create an Event</h4>
 			<%= form_for(@event) do |f| %>
 			  <%= f.hidden_field :category_id %>
 			  <%= f.hidden_field :start_time %>
 			  <%= f.hidden_field :end_time %>
 
-			  <p><%= f.label :name %> <%= f.text_field :name %></p>
-			  <p><%= f.submit 'Create Event' %></p>
+			  <div class="form-group"><%= f.label :name, :class => 'control-label' %> <%= f.text_field :name, :class => 'form-control' %></div>
+			  <div class="form-group"><%= f.submit 'Create Event', :class => 'btn btn-primary' %></div>
 			<% end -%>
-		</td>
-	</tr>
-</table>
+		<% end -%>
+	</div>
+</div>
 
 <script type="text/javascript">
 function showGraph(){
@@ -67,4 +71,6 @@ function showGraph(){
 $(showGraph);
 </script>
 
-<div id="tweets"></div>
+<div class="row">
+	<div id="tweets"></div>
+</div>
