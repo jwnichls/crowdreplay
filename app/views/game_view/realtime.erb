@@ -1,43 +1,47 @@
-<%= javascript_include_tag "dygraph-combined.js" %>
-
 <p>
 	<%= link_to "Switch to Fixed View", :controller => "game_view", :action => "show", :category => @category.category %>
 </p>
 
-<div id="graphdiv" style="width: 100%; height:400px;"></div>
+<div class="row">
+	<div class="col-md-12" id="graph"></div>
+</div>
 
-<script type="text/javascript">
-function showGraph(){
-	try{
-			
-   		g = new Dygraph(
-       		document.getElementById("graphdiv"),
-			'<%= url_for(:controller => 'game_view', :action => 'graphdata', :category => @category.category) %>',
-			{
-       	 		labels:["time","volume"],
-		 		clickCallback: function(e, x, pts) {
-		 			var date = new Date(x);
-		
-					$("#tweets").load('<%= url_for(:controller => 'game_view', :action => 'tweets_at_time', :category => @category.category) %>', 
-									  'time=' + encodeURIComponent(date.toString()))
-				}
-       		}
-   		);
-		
-	}
-	catch(ex)
-	{
-		alert(ex.toSource());
-	}
-}
+<div class="row">
+	<div class="col-md-offset-4 col-md-4 text-center" id="graphinfo">
+	</div>
+</div>
 
-function showRealtimeGraph(){
-	setInterval(showGraph,60000);
+<div class="row">
+	<div id="tweets"></div>
+</div>
+
+<%=  javascript_include_tag "d3-linegraph.js" %>
+
+<script>
+function showRealtimeGraph() {
+	$("#graph svg g").empty();
 	
-	showGraph();
+	d3.csv("<%= url_for(:controller => 'game_view', :action => 'data', :category => @category.category) %>", function(error,data) {
+
+		showGraph(error,data);
+		
+		svg.on("click", function(e) {
+			var x0 = x.invert(d3.mouse(this)[0]),
+		        i = bisectDate(data, x0, 1),
+		        d0 = data[i - 1],
+		        d1 = data[i],
+		        d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+		     
+			// $("#tweets").load('<%= url_for(:controller => 'game_view', :action => 'tweets_at_time', :category => @category.category) %>', 'time=' + encodeURIComponent(d.time.toString()))
+		});
+	});	
 }
 
-$(showRealtimeGraph);
-</script>
+function startUpdatingGraph(){
+	setInterval(showRealtimeGraph,60000);
+	
+	showRealtimeGraph();
+}
 
-<div id="tweets"></div>
+$(startUpdatingGraph);
+</script>

@@ -29,7 +29,7 @@ Crowdreplay::Application.routes.draw do
   # Game View
   get 'game_view/show'
   post 'game_view/show'
-  get 'game_view/graphdata'
+  get 'game_view/data'
   get 'game_view/realtime'
   get 'game_view/tweets_at_time'
   

@@ -1,8 +1,6 @@
-<%=  javascript_include_tag "dygraph-combined.js" %>
-
 <div class="row">
 	<p>
-		<%= link_to "Switch to Real Time View", :controller => "game_view", :action => "realtime", :category => @category.category %> -
+		<%= link_to "Switch to Real Time View", :controller => "game_view", :action => "realtime", :category => @category.category %>		
 	</p>
 </div>
 
@@ -15,7 +13,12 @@
 </div>
 
 <div class="row">
-	<div id="graphdiv" style="width:100%; height:400px;"></div>
+	<div class="col-md-12" id="graph"></div>
+</div>
+
+<div class="row">
+	<div class="col-md-offset-4 col-md-4 text-center" id="graphinfo">
+	</div>
 </div>
 
 <div class="row">
@@ -43,34 +46,27 @@
 	</div>
 </div>
 
-<script type="text/javascript">
-function showGraph(){
-	try{
-			
-   		g = new Dygraph(
-       		document.getElementById("graphdiv"),
-			'<%= url_for(:controller => 'game_view', :action => 'graphdata', :category => @category.category, :starttime => @starttime, :endtime => @endtime) %>',
-			{
-       	 		labels:["time","volume"],
-		 		clickCallback: function(e, x, pts) {
-		 			var date = new Date(x);
-		
-					$("#tweets").load('<%= url_for(:controller => 'game_view', :action => 'tweets_at_time', :category => @category.category) %>', 
-									  'time=' + encodeURIComponent(date.toString()))
-				}
-       		}
-   		);
-		
-	}
-	catch(ex)
-	{
-		alert(ex.toSource());
-	}
-}
-
-$(showGraph);
-</script>
-
 <div class="row">
 	<div id="tweets"></div>
 </div>
+
+<%=  javascript_include_tag "d3-linegraph.js" %>
+
+<script>
+$(function() {
+	d3.csv("<%= url_for(:controller => 'game_view', :action => 'data', :category => @category.category, :starttime => @starttime, :endtime => @endtime) %>", function(error,data) {
+		
+		showGraph(error,data);
+		
+		svg.on("click", function(e) {
+			var x0 = x.invert(d3.mouse(this)[0]),
+		        i = bisectDate(data, x0, 1),
+		        d0 = data[i - 1],
+		        d1 = data[i],
+		        d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+		     
+			// $("#tweets").load('<%= url_for(:controller => 'game_view', :action => 'tweets_at_time', :category => @category.category) %>', 'time=' + encodeURIComponent(d.time.toString()))
+		});
+	});
+});
+</script>

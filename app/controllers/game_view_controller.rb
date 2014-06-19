@@ -40,8 +40,29 @@ class GameViewController < ApplicationController
       @event.end_time = @endtime
     end
   end
+  
+  def d3test
+    if params[:category].nil?
+      @category = TweetCategory.find_by_id(1)
+    else
+      @category = TweetCategory.find_by_category(params[:category])
+    end
+    
+    Tweet.use_category(@category)
 
-  def graphdata
+    @endtime = 2.minutes.ago.utc.change(:sec => 0)
+    @starttime = 122.minutes.ago.utc.change(:sec => 0)
+
+    if !params[:starttime].nil?
+      @starttime = DateTime.parse(params[:starttime]).utc
+    end
+
+    if !params[:endtime].nil?
+      @endtime = DateTime.parse(params[:endtime]).utc
+    end
+  end
+
+  def data
     if !params[:eventid].nil?
       @event = Event.find_by_id(params[:eventid])
       
