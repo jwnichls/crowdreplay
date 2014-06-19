@@ -50,8 +50,6 @@
 	<div id="tweets"></div>
 </div>
 
-<%=  javascript_include_tag "d3-linegraph.js" %>
-
 <script>
 $(function() {
 	d3.csv("<%= url_for(:controller => 'game_view', :action => 'data', :category => @category.category, :starttime => @starttime, :endtime => @endtime) %>", function(error,data) {

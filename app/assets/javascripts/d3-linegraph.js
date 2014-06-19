@@ -28,13 +28,11 @@ var line = d3.svg.line()
     .x(function(d) { return x(d.time); })
     .y(function(d) { return y(d.volume); });
 
-var svg = d3.select("#graph").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  	.append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+var svg = null;
 
 function showGraph(error, data) {
+
+  if (!svg) return;
 
   data.forEach(function(d) {
     d.time = parseDate(d.time);
@@ -91,3 +89,12 @@ function showGraph(error, data) {
 	}
 }
 
+$(function() {
+	if (d3.select("#graph"))
+	{
+		svg = d3.select("#graph").append("svg").attr("width", width + margin.left + margin.right)
+		      .attr("height", height + margin.top + margin.bottom)
+		  	  .append("g")
+		      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");	
+	}
+});
