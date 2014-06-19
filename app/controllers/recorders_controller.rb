@@ -1,4 +1,6 @@
 class RecordersController < ApplicationController
+  before_filter :require_admin
+
   # GET /recorders
   # GET /recorders.json
   def index

@@ -1,4 +1,6 @@
 class EventsController < ApplicationController
+  before_filter :require_admin, :except => [:index,:show]
+  
   # GET /events
   # GET /events.xml
   def index
