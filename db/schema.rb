@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131011070512) do
+ActiveRecord::Schema.define(:version => 20140618202631) do
 
   create_table "events", :force => true do |t|
     t.string   "name"
@@ -83,20 +83,91 @@ ActiveRecord::Schema.define(:version => 20131011070512) do
   add_index "tweets", ["created_at"], :name => "index_tweets_on_created_at"
   add_index "tweets", ["tweet_category_id"], :name => "index_tweets_on_tweet_category_id"
 
+  create_table "tweets_1", :force => true do |t|
+    t.string   "text"
+    t.datetime "created_at",                        :null => false
+    t.string   "screenname"
+    t.integer  "user_id"
+    t.datetime "updated_at",                        :null => false
+    t.string   "lang"
+    t.string   "json",              :limit => 7500
+    t.integer  "tweet_category_id"
+  end
+
+  add_index "tweets_1", ["created_at"], :name => "index_tweets_on_created_at"
+  add_index "tweets_1", ["tweet_category_id"], :name => "index_tweets_on_tweet_category_id"
+
+  create_table "tweets_2", :force => true do |t|
+    t.string   "text"
+    t.datetime "created_at",                        :null => false
+    t.string   "screenname"
+    t.integer  "user_id"
+    t.datetime "updated_at",                        :null => false
+    t.string   "lang"
+    t.string   "json",              :limit => 7500
+    t.integer  "tweet_category_id"
+  end
+
+  add_index "tweets_2", ["created_at"], :name => "index_tweets_on_created_at"
+  add_index "tweets_2", ["tweet_category_id"], :name => "index_tweets_on_tweet_category_id"
+
+  create_table "tweets_3", :force => true do |t|
+    t.string   "text"
+    t.datetime "created_at",                        :null => false
+    t.string   "screenname"
+    t.integer  "user_id"
+    t.datetime "updated_at",                        :null => false
+    t.string   "lang"
+    t.string   "json",              :limit => 7500
+    t.integer  "tweet_category_id"
+  end
+
+  add_index "tweets_3", ["created_at"], :name => "index_tweets_on_created_at"
+  add_index "tweets_3", ["tweet_category_id"], :name => "index_tweets_on_tweet_category_id"
+
+  create_table "tweets_4", :force => true do |t|
+    t.string   "text"
+    t.datetime "created_at",                        :null => false
+    t.string   "screenname"
+    t.integer  "user_id"
+    t.datetime "updated_at",                        :null => false
+    t.string   "lang"
+    t.string   "json",              :limit => 7500
+    t.integer  "tweet_category_id"
+  end
+
+  add_index "tweets_4", ["created_at"], :name => "index_tweets_on_created_at"
+  add_index "tweets_4", ["tweet_category_id"], :name => "index_tweets_on_tweet_category_id"
+
+  create_table "tweets_5", :force => true do |t|
+    t.string   "text"
+    t.datetime "created_at",                        :null => false
+    t.string   "screenname"
+    t.integer  "user_id"
+    t.datetime "updated_at",                        :null => false
+    t.string   "lang"
+    t.string   "json",              :limit => 7500
+    t.integer  "tweet_category_id"
+  end
+
+  add_index "tweets_5", ["created_at"], :name => "index_tweets_on_created_at"
+  add_index "tweets_5", ["tweet_category_id"], :name => "index_tweets_on_tweet_category_id"
+
   create_table "users", :force => true do |t|
-    t.string   "email",                              :null => false
-    t.string   "crypted_password",                   :null => false
-    t.string   "password_salt",                      :null => false
-    t.string   "persistence_token",                  :null => false
-    t.string   "single_access_token",                :null => false
-    t.string   "perishable_token",                   :null => false
-    t.integer  "login_count",         :default => 0, :null => false
-    t.integer  "failed_login_count",  :default => 0, :null => false
+    t.string   "email",                                  :null => false
+    t.string   "crypted_password",                       :null => false
+    t.string   "password_salt",                          :null => false
+    t.string   "persistence_token",                      :null => false
+    t.string   "single_access_token",                    :null => false
+    t.string   "perishable_token",                       :null => false
+    t.integer  "login_count",         :default => 0,     :null => false
+    t.integer  "failed_login_count",  :default => 0,     :null => false
     t.datetime "last_request_at"
     t.datetime "current_login_at"
     t.datetime "last_login_at"
     t.string   "current_login_ip"
     t.string   "last_login_ip"
+    t.boolean  "admin",               :default => false
   end
 
 end

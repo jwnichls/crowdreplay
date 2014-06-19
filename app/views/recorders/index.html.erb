@@ -10,45 +10,41 @@
 	$(initRefresh);
 </script>
 
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Query</th>
-    <th>Account</th>
-    <th>Status</th>
-	<th></th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Query</th>
+      <th>Account</th>
+      <th>Status</th>
+	  <th></th>
+	  <th></th>
+    </tr>
+  </thead>
 
 <% @recorders.each do |recorder| %>
   <tr>
-    <td><%= recorder.category %></td>
-    <td><%= recorder.query %></td>
-    <td><%= recorder.screen_name %></td>
-    <td><%= recorder.status %></td>
-	<td>
+    <td style="vertical-align: middle;"><%= recorder.category %></td>
+    <td style="vertical-align: middle;"><%= recorder.query %></td>
+    <td style="vertical-align: middle;"><%= recorder.screen_name %></td>
+    <td style="vertical-align: middle;"><%= recorder.status %></td>
+	<td style="vertical-align: middle;">
 		<% if recorder.running -%>
 			<%= link_to 'View Data', :controller => "game_view", :action => "realtime", :category => recorder.category %>
 		<% end -%>
 	</td>
-    <td><%= link_to 'Edit', edit_recorder_path(recorder) %></td>
-	<td>
-		<% if recorder.running or recorder.status == "Starting" -%>
-			<%= link_to 'Stop', stop_recorder_path(recorder) %>
+	<td class="text-right">
+	    <%= link_to 'Edit', edit_recorder_path(recorder), :class => 'btn btn-mini' %>
+        <% if recorder.running or recorder.status == "Starting" -%>
+			<%= link_to 'Stop', stop_recorder_path(recorder), :class => 'btn btn-mini btn-danger' %>
 		<% else -%>
-			<%= link_to 'Start', start_recorder_path(recorder) %>
+			<%= link_to 'Start', start_recorder_path(recorder), :class => 'btn btn-mini btn-success' %>
 		<% end -%>
 	</td>
-	<!--
-	<td>
-		<%= link_to "CSV", :controller => "game_view", :action => "tweets_at_time", :format => "csv", :category => recorder.category %>
-	</td> -->
   </tr>
 <% end %>
 </table>
 
 <br />
 
-<%= link_to 'New Recorder', new_recorder_path %>
+<%= link_to 'New Recorder', new_recorder_path, :class => 'btn btn-primary' %>

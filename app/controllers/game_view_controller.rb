@@ -1,4 +1,9 @@
 class GameViewController < ApplicationController
+  def index
+    @recorders = Recorder.find_all_by_running(true)
+    @events = Event.find(:all, :order => :start_time)
+  end
+  
   def show
     if !params[:eventid].nil?
       @event = Event.find_by_id(params[:eventid])

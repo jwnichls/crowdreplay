@@ -3,10 +3,12 @@ class Recorder < ActiveRecord::Base
   
   def set_screenname
     if (self.screen_name == nil or self.screen_name == "") and self.oauth_access_token != nil and self.oauth_access_secret != nil
-      twitter = Twitter::Client.new(
-        :oauth_token => self.oauth_access_token,
-        :oauth_token_secret => self.oauth_access_secret
-      )
+      twitter = Twitter::REST::Client.new do |config|
+        config.consumer_key        = ENV['TWITTER_CONSUMER_KEY']
+        config.consumer_secret     = ENV['TWITTER_CONSUMER_SECRET']
+        config.access_token        = self.oauth_access_token
+        config.access_token_secret = self.oauth_access_secret
+      end
     
       self.screen_name = twitter.user.screen_name
     end

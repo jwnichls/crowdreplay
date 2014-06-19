@@ -15,26 +15,29 @@
   <%= f.hidden_field :oauth_access_secret %>
   <%= f.hidden_field :screen_name %>
 
-  <div class="field">
-    <%= f.label "Name" %><br />
-    <%= f.text_field :category %>
+  <div class="form-group">
+    <%= f.label "Name", :class => 'control-label' %><br />
+    <%= f.text_field :category, :class => 'form-control' %>
   </div>
-  <div class="field">
-    <%= f.label :query %><br />
-    <%= f.text_field :query %>
+  <div class="form-group">
+    <%= f.label :query, :class => 'control-label' %><br />
+    <%= f.text_field :query, :class => 'form-control' %>
   </div>
-  <div class="field">
+  <div class="form-group">
 	<% if @recorder.screen_name %>
-		<b>Twitter Account</b>: <%= @recorder.screen_name %><br/>
+		<b>Twitter Account</b>: <%= @recorder.screen_name %> &nbsp;&nbsp;
 	<% end -%>
-	<%= f.submit 'Select Twitter Account' %>
+	<%= f.submit 'Select Twitter Account', :class => 'btn btn-mini btn-warning' %>
   </div>
+
   <% if @recorder.status %>
-	<div>
+	<div class="form-group">
 	  <b>Status:</b> <%= @recorder.status %>
 	</div>
   <% end -%>
-  <div class="actions">
-    <%= f.submit %>
+
+  <div class="form-actions">
+    <%= f.submit :class => 'btn btn-mini btn-primary' %>
   </div>
+
 <% end %>

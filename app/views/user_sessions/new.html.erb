@@ -1,0 +1,37 @@
+<%- model_class = UserSession -%>
+<div class="page-header">
+  <h1>Welcome back!</h1>
+</div>
+
+<div class="row">
+	<div class="col-md-6 col-md-offset-3">
+		<p>
+			If you don't have an account yet, <%= link_to "register for one here.", new_user_path %>
+		</p>
+		
+		<%= form_for @user_session, :as => :user_session, :url => { :action => "create" } do |f| %>
+			<%= render "shared/error_messages", :target => @user_session %>
+
+			<div class="form-group spaced">
+				<%= f.label :email %>
+				<%= f.text_field :email, :class => 'form-control', :type => :email %>
+			</div>
+
+			<div class="form-group">
+				<%= f.label :password %>
+				<%= f.password_field :password, :class => 'form-control' %>
+			</div>
+
+			<div class="checkbox">
+				<%= f.label :remember_me do %>
+					<%= f.check_box :remember_me %> 
+					Remember Me
+				<% end -%>
+			</div>
+
+			<div class="form-actions">
+				<%= f.submit "Login", :class => 'btn btn-primary' %>
+			</div>
+		<% end %>
+	</div>
+</div>

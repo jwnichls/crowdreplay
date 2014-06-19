@@ -1,4 +1,16 @@
 Crowdreplay::Application.routes.draw do
+
+  # Session Routes
+  resources :user_sessions
+
+  match 'login' => "user_sessions#new",      :as => :login
+  match 'logout' => "user_sessions#destroy", :as => :logout
+
+  resources :users, :except => [:index,:show,:destroy,:edit] do
+    collection do
+      get :edit
+    end
+  end
   
   # CRUD Resources
   resources :recorders, :except => [:show] do
@@ -25,5 +37,5 @@ Crowdreplay::Application.routes.draw do
   match '/auth/:provider/callback' => 'recorders#auth_redirect'
   
   # Map the root
-  root :to => 'recorders#index'
+  root :to => 'game_view#index'
 end
