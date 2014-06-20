@@ -8,7 +8,7 @@ class GameViewController < ApplicationController
     if !params[:eventid].nil?
       @event = Event.find_by_id(params[:eventid])
       
-      @category = TweetCategory.find_by_id(@event.category_id)
+      @category = @event.category
       Tweet.use_category(@category)
       
       @starttime = @event.start_time
@@ -66,7 +66,7 @@ class GameViewController < ApplicationController
     if !params[:eventid].nil?
       event = Event.find_by_id(params[:eventid])
       
-      @category = TweetCategory.find_by_id(event.category_id)
+      @category = event.category_id
       Tweet.use_category(@category)
       @starttime = event.start_time
       @endtime = event.end_time
