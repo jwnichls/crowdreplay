@@ -61,7 +61,7 @@ function setYScaleType(data) {
 		y = d3.scale.log().clamp(true)
 		    	.range([height, 0]);
 		
-		minVal = Math.min(1000,d3.min(data, function(d) { return d.volume }));
+		minVal = Math.max(1,d3.min(data, function(d) { return d.volume }));
 	}
 	else
 	{
@@ -80,14 +80,6 @@ function setYScaleType(data) {
 	return isLog;
 }
 
-function fixDataForLogScale(data) {
-	
-	data.forEach(function(d) {
-		if (d.volume <= 0)
-	    	d.volume = 1;
-	});
-}
-
 function showGraph(error, data) {
 
   if (!svg) return;
@@ -98,10 +90,7 @@ function showGraph(error, data) {
   });
 
   x.domain(d3.extent(data, function(d) { return d.time; }));
-  if (setYScaleType(data))
-  {
-	fixDataForLogScale(data);
-  }
+  setYScaleType(data);
 
   svg.append("g")
       .attr("class", "x axis")
