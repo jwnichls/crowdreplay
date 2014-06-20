@@ -115,18 +115,22 @@ function showGraph(error, data) {
 	
 	  svg.append("rect")
 	      .attr("class", "overlay")
-	      .attr("width", width)
+	      .attr("width", width + 25)
 	      .attr("height", height)
 	      .on("mouseout", function() { $("#graphinfo").empty(); focus.style("display", "none"); })
 		  .on("mouseover", function() { focus.style("display", null); })
 	      .on("mousemove", mousemove);
 
 	function mousemove() {
+
 	    var x0 = x.invert(d3.mouse(this)[0]),
 	        i = bisectDate(data, x0, 1),
 	        d0 = data[i - 1],
-	        d1 = data[i],
-	        d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+	        d1 = data[i];
+
+		var d = d0;
+		if (d1)
+			d = x0 - d0.date > d1.date - x0 ? d1 : d0;
 	
 		focus.attr("transform", "translate(" + x(d.time) + "," + y(d.volume) + ")");
 
