@@ -143,6 +143,7 @@ $(function() {
 	if (d3.select("#graph"))
 	{
 		setWidth($("#graph").width());
+		setHeight(width/2);
 		setXScale();
 		
 		svg = d3.select("#graph").append("svg").attr("width", width + margin.left + margin.right)
