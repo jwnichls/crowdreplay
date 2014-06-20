@@ -16,3 +16,6 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+
+# ignore full version of d3 for debugging
+/app/assets/javascripts/d3.js
