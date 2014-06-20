@@ -13,7 +13,7 @@ var parseDate = d3.time.format("%m-%d-%Y %H:%M %Z").parse,
 var x = d3.time.scale()
     .range([0, width]);
 
-var y = d3.scale.linear()
+var y = d3.scale.log().clamp(true)
     .range([height, 0]);
 
 var xAxis = d3.svg.axis()
@@ -30,6 +30,34 @@ var line = d3.svg.line()
 
 var svg = null;
 
+function setYScaleType(data) {
+
+	var LOG_VALUE_THRESHOLD = 100000;
+	var minVal = 0;
+	var maxVal = d3.max(data, function(d) { return d.volume; });
+	
+	if (maxVal > LOG_VALUE_THRESHOLD)
+	{
+		y = d3.scale.log().clamp(true)
+		    	.range([height, 0]);
+		
+		minVal = Math.min(100,d3.min(data, function(d) { return d.volume }));
+	}
+	else
+	{
+		y = d3.scale.linear()
+		    	.range([height, 0]);
+		
+		minVal = 0;
+	}
+
+	yAxis = d3.svg.axis()
+		    .scale(y)
+		    .orient("left");
+
+	y.domain([minVal,Math.max(500,maxVal)]);
+}
+
 function showGraph(error, data) {
 
   if (!svg) return;
@@ -40,7 +68,7 @@ function showGraph(error, data) {
   });
 
   x.domain(d3.extent(data, function(d) { return d.time; }));
-  y.domain([0,Math.max(500,d3.max(data, function(d) { return d.volume; }))]);
+  setYScaleType(data);
 
   svg.append("g")
       .attr("class", "x axis")
