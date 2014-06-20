@@ -73,7 +73,7 @@ function setYScaleType(data) {
 		    .scale(y)
 		    .orient("left");
 
-	y.domain([minVal,Math.max(500,maxVal)]);
+	y.domain([minVal,Math.max(500,maxVal)]).nice();
 }
 
 function showGraph(error, data) {
