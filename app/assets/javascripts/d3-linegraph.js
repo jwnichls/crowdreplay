@@ -59,7 +59,7 @@ function setYScaleType(data) {
 		y = d3.scale.log().clamp(true)
 		    	.range([height, 0]);
 		
-		minVal = Math.min(100,d3.min(data, function(d) { return d.volume }));
+		minVal = d3.min(data, function(d) { return d.volume });
 	}
 	else
 	{
