@@ -53,13 +53,15 @@ function setYScaleType(data) {
 	var LOG_VALUE_THRESHOLD = 100000;
 	var minVal = 0;
 	var maxVal = d3.max(data, function(d) { return d.volume; });
+	var isLog = false;
 	
 	if (maxVal > LOG_VALUE_THRESHOLD)
 	{
+		isLog = true;
 		y = d3.scale.log().clamp(true)
 		    	.range([height, 0]);
 		
-		minVal = Math.min(1,d3.min(data, function(d) { return d.volume }));
+		minVal = Math.min(1000,d3.min(data, function(d) { return d.volume }));
 	}
 	else
 	{
@@ -74,6 +76,16 @@ function setYScaleType(data) {
 		    .orient("left");
 
 	y.domain([minVal,Math.max(500,maxVal)]).nice();
+	
+	return isLog;
+}
+
+function fixDataForLogScale(data) {
+	
+	data.forEach(function(d) {
+		if (d.volume <= 0)
+	    	d.volume = 1;
+	});
 }
 
 function showGraph(error, data) {
@@ -86,7 +98,10 @@ function showGraph(error, data) {
   });
 
   x.domain(d3.extent(data, function(d) { return d.time; }));
-  setYScaleType(data);
+  if (setYScaleType(data))
+  {
+	fixDataForLogScale(data);
+  }
 
   svg.append("g")
       .attr("class", "x axis")
