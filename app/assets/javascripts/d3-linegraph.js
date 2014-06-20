@@ -2,23 +2,21 @@
 //		http://bl.ocks.org/mbostock/3883245
 //		http://bl.ocks.org/mbostock/3902569
 
-var margin = {top: 20, right: 20, bottom: 30, left: 75},
+var margin = {top: 20, right: 75, bottom: 30, left: 75},
     width = 960 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+    height = 500 - margin.top - margin.bottom;
 
 var parseDate = d3.time.format("%m-%d-%Y %H:%M %Z").parse,
 	bisectDate = d3.bisector(function(d) { return d.time; }).left,
 	printDate = d3.time.format("%I:%M %p");
 
-var x = d3.time.scale()
-    .range([0, width]);
+var x = null;
+var xAxis = null;
+
+setXScale();
 
 var y = d3.scale.log().clamp(true)
     .range([height, 0]);
-
-var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom");
 
 var yAxis = d3.svg.axis()
     .scale(y)
@@ -29,6 +27,26 @@ var line = d3.svg.line()
     .y(function(d) { return y(d.volume); });
 
 var svg = null;
+
+function setWidth(newWidth) {
+	
+	width = newWidth - margin.left - margin.right;
+}
+
+function setHeight(newHeight) {
+	
+	height = newHeight - margin.top - margin.bottom;
+}
+
+function setXScale() {
+	
+	x = d3.time.scale()
+	    .range([0, width]);
+
+	xAxis = d3.svg.axis()
+	    .scale(x)
+	    .orient("bottom");	
+}
 
 function setYScaleType(data) {
 
@@ -120,9 +138,12 @@ function showGraph(error, data) {
 $(function() {
 	if (d3.select("#graph"))
 	{
+		setWidth($("#graph").width());
+		setXScale();
+		
 		svg = d3.select("#graph").append("svg").attr("width", width + margin.left + margin.right)
 		      .attr("height", height + margin.top + margin.bottom)
 		  	  .append("g")
-		      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");	
+		      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 	}
 });
