@@ -64,15 +64,13 @@ class GameViewController < ApplicationController
 
   def data
     if !params[:eventid].nil?
-      @event = Event.find_by_id(params[:eventid])
+      event = Event.find_by_id(params[:eventid])
       
-      @category = TweetCategory.find_by_id(@event.category_id)
+      @category = TweetCategory.find_by_id(event.category_id)
       Tweet.use_category(@category)
-      @starttime = @event.start_time
-      @endtime = @event.end_time
+      @starttime = event.start_time
+      @endtime = event.end_time
     else 
-      @event = Event.new
-
       if params[:category].nil?
         @category = TweetCategory.find_by_id(1)
       else
@@ -85,19 +83,16 @@ class GameViewController < ApplicationController
 
       if !params[:starttime].nil?
         @starttime = DateTime.parse(params[:starttime]).utc
+      elsif !params[:since].nil?
+        @starttime = DateTime.parse(params[:since]).utc + 60 # return a minute after since
       end
 
       if !params[:endtime].nil?
         @endtime = DateTime.parse(params[:endtime]).utc
       end
-
-      @event.category_id = @category.id
-      @event.start_time = @starttime
-      @event.end_time = @endtime
     end
     
     @volumes = calculate_and_cache_volumes(@category,@starttime,@endtime)
-    @max = @volumes.max_by(&:count).count + 10
     
     render layout: nil
   end
