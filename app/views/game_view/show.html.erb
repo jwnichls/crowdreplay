@@ -4,13 +4,15 @@
 	</p>
 </div>
 
-<div class="row">
-	<p>
-		<i>Start of Data:</i> <%= @category.tweets.minimum('created_at') %><br/>
-		<i>End of Data:</i> <%= @category.tweets.maximum('created_at') %><br/>
-		<i>Total # of Tweets:</i> <%= @category.tweets.count %><br/>
-	</p>
-</div>
+<%
+#<div class="row">
+#	<p>
+#		<i>Start of Data:</i> <%= @category.tweets.minimum('created_at') <br/>
+#		<i>End of Data:</i> <%= @category.tweets.maximum('created_at') <br/>
+#		<i>Total # of Tweets:</i> <%= @category.tweets.count <br/>
+#	</p>
+#</div>
+%>
 
 <div class="row">
 	<div class="col-md-12" id="graph"></div>
