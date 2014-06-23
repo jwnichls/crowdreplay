@@ -31,6 +31,8 @@ var line = d3.svg.line()
     .x(function(d) { return x(d.label); })
     .y(function(d) { return y(d.value); });
 
+var varNames = null;
+
 var svg = null;
 
 function setWidth(newWidth) {
@@ -97,8 +99,8 @@ function showGraph(error, data) {
 	    d.time = parseDate(d.time);
 	  });
 	
-  	var varNames = d3.keys(data[0])
-                     .filter(function (key) { return key !== labelVar;});
+  	varNames = d3.keys(data[0])
+                 .filter(function (key) { return key !== labelVar;});
 
 	var seriesData = varNames.map(function (name) {
 		return {
@@ -135,20 +137,27 @@ function showGraph(error, data) {
 	      .attr("d", function (d) { return line(d.values); })
 	      .style("stroke", function (d) { return color(d.name); })
 	      .style("fill", "none");
-/*
-	var focus = svg.append("g")
-	               .attr("class", "focus")
-	               .style("display", "none");
 
-	focus.append("circle")
-	     .attr("r", 3.5);
+	
+	var focusElems = varNames.map(function(n) {
+
+		var focus = svg.append("g")
+		               .attr("class", "focus")
+					   .attr("focusvar", n)
+		               .style("display", "none");
+
+		focus.append("circle")
+		     .attr("r", 3.5);
+		
+		return focus;
+	});
 	
 	svg.append("rect")
 	   .attr("class", "overlay")
 	   .attr("width", width + 25)
 	   .attr("height", height)
-	   .on("mouseout", function() { $("#graphinfo").empty(); focus.style("display", "none"); })
-	   .on("mouseover", function() { focus.style("display", null); })
+	   .on("mouseout", function() { $("#graphinfo").empty(); focusElems.forEach(function(n) { n.style("display", "none"); }); })
+	   .on("mouseover", function() { focusElems.forEach(function(n) { n.style("display", null); }); })
 	   .on("mousemove", mousemove);
 
 	function mousemove() {
@@ -162,11 +171,16 @@ function showGraph(error, data) {
 		if (d1)
 			d = x0 - d0.date > d1.date - x0 ? d1 : d0;
 	
-		// focus.attr("transform", "translate(" + x(d.time) + "," + y(d.volume) + ")");
+		focusElems.forEach(function (n) { n.attr("transform", "translate(" + x(d[labelVar]) + "," + y(d[n.attr("focusvar")]) + ")") });
 
+		var dataStr = "<b>" + printDate(d.time) + "</b> : ";
+		varNames.forEach(function(n) {
+			dataStr += "<i>" + n + "</i> " + d[n] + " tweets/min &nbsp;&nbsp;"
+		});
+		
 		$("#graphinfo").empty()
-					   .append("<b>" + printDate(d.time) + "</b> : " + d.volume + " tweets/min");
-	}*/
+					   .append(dataStr);
+	}
 }
 
 $(function() {
