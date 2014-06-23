@@ -66,7 +66,7 @@ function setYScaleType(data) {
 	          	 });
 	var isLog = false;
 	
-	if (false /*maxVal > LOG_VALUE_THRESHOLD*/)
+	if (maxVal > LOG_VALUE_THRESHOLD)
 	{
 		isLog = true;
 		y = d3.scale.log().clamp(true)
