@@ -23,7 +23,7 @@
 
 <% @recorders.each do |recorder| %>
   <tr>
-    <td style="vertical-align: middle;"><%= link_to recorder.category, :controller => "game_view", :action => "realtime", :category => recorder.category %></td>
+    <td style="vertical-align: middle;"><%= link_to recorder.category, :controller => "game_view", :action => "realtime", :categories => recorder.category %></td>
     <td style="vertical-align: middle;"><%= recorder.status %></td>
   </tr>
 <% end %>
@@ -51,7 +51,7 @@
 
 <% @events.each do |event| %>
   <tr>
-    <td style="vertical-align: middle;"><%= link_to event.name, {:controller => :game_view, :action => :show, :eventid => event.id} %></td>
+    <td style="vertical-align: middle;"><%= link_to event.name, {:controller => :game_view, :action => :show, :categories => event.category.category, :starttime => event.start_time, :endtime => event.end_time} %></td>
     <td style="vertical-align: middle;"><%=h event.start_time.strftime("%b %d, %Y  %k:%M %Z") %></td>
     <td style="vertical-align: middle;"><%=h event.end_time.strftime("%b %d, %Y  %k:%M %Z") %></td>
 	<% if current_user and current_user.admin? -%>
