@@ -1,28 +1,5 @@
-<h2>Editing event <%= @event.name %></h2>
+<div class="page-header">
+  <h2>Edit <%= @event.name %></h2>
+</div>
 
-<% form_for(@event) do |f| %>
-  <%= f.error_messages %>
-
-  <p>
-    <%= f.label :name %><br />
-    <%= f.text_field :name %>
-  </p>
-  <p>
-    <%= f.label :category_id %><br />
-    <%= f.text_field :category_id %>
-  </p>
-  <p>
-    <%= f.label :start_time %><br />
-    <%= f.datetime_select :start_time %>
-  </p>
-  <p>
-    <%= f.label :end_time %><br />
-    <%= f.datetime_select :end_time %>
-  </p>
-  <p>
-    <%= f.submit 'Update' %>
-  </p>
-<% end %>
-
-<%= link_to 'Show', @event %> |
-<%= link_to 'Back', events_path %>
+<%= render :partial => 'form' %>

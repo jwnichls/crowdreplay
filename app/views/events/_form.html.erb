@@ -1,0 +1,33 @@
+<div class="row">
+	<div class="col-md-6 col-md-offset-3">
+
+		<%= render "shared/error_messages", :target => @event %>
+
+		<%= form_for @event do |f| %>
+
+			<div class="control-group">
+		    	<%= f.label :name, :class => 'control-label' %><br />
+		    	<%= f.text_field :name, :class => 'form-control' %>
+			</div>
+
+			<div class="control-group">
+			    <%= f.label :categories, :class => 'control-label' %><br />
+			    <%= f.text_field :category_id, :class => 'form-control' %>
+			</div>
+
+			<div class="control-group">
+			    <%= f.label :start_time, :class => 'control-label' %><br />
+			    <%= f.datetime_select :start_time, :class => 'form-control' %>
+			</div>
+
+			<div class="control-group">
+			    <%= f.label :end_time, :class => 'control-label' %><br />
+			    <%= f.datetime_select :end_time, :class => 'form-control' %>
+			</div>
+		
+			<div class="form-actions">
+		    	<%= f.submit nil, :class => 'btn btn-primary' %>
+			</div>
+		<% end -%>
+	</div>
+</div>
