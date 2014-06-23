@@ -57,7 +57,7 @@ function setXScale() {
 
 function setYScaleType(data) {
 
-	var LOG_VALUE_THRESHOLD = 100000;
+	var LOG_VALUE_THRESHOLD = 50000;
 	var minVal = d3.min(data, function (c) { 
 	            	return d3.min(c.values, function (d) { return d.value; });
 	          	 });
