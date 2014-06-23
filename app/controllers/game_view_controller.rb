@@ -1,28 +1,39 @@
-class GameViewController < ApplicationController
+class GameViewController < ApplicationController 
+  
   def index
     @recorders = Recorder.find_all_by_running(true)
     @events = Event.find(:all, :order => "start_time DESC")
   end
   
   def show
-    if !params[:eventid].nil?
-      @event = Event.find_by_id(params[:eventid])
+    @categories = []
+    @events = []
+    
+    if !params[:events].nil?
+      event_names = params[:events].split(",")
       
-      @category = @event.category
-      Tweet.use_category(@category)
-      
-      @starttime = @event.start_time
-      @endtime = @event.end_time
-    else 
-      @event = Event.new
+      event_names.each { |event_name| 
+        
+        event = Event.find_by_name(event_name)
+        if !event
+          @events.push(event)
+          @categories.pust(event.category)
 
-      if params[:category].nil?
-        @category = TweetCategory.find_by_id(1)
-      else
-        @category = TweetCategory.find_by_category(params[:category])
-      end
+          @starttime = earliest_date(@starttime, event.start_time)
+          @endtime = latest_date(@endtime, event.end_time)
+        end          
+      }
       
-      Tweet.use_category(@category)
+    elsif !params[:categories].nil?
+
+      category_names = params[:categories].split(",")
+      category_names.each { |category_name| 
+      
+        category = TweetCategory.find_by_category(category_name)
+        if category
+          @categories.push(category)
+        end
+      }
 
       @endtime = 2.minutes.ago.utc.change(:sec => 0)
       @starttime = 122.minutes.ago.utc.change(:sec => 0)
@@ -35,75 +46,56 @@ class GameViewController < ApplicationController
         @endtime = DateTime.parse(params[:endtime]).utc
       end
 
-      @event.category_id = @category.id
+      @event = Event.new
+      @event.category_id = @categories[0].id
       @event.start_time = @starttime
       @event.end_time = @endtime
-    end
+    end    
   end
-  
-  def d3test
-    if params[:category].nil?
-      @category = TweetCategory.find_by_id(1)
-    else
-      @category = TweetCategory.find_by_category(params[:category])
+
+  def data
+    @categories = []
+    if !params[:categories].nil?
+      category_names = params[:categories].split(",")
+      category_names.each { |category_name| 
+      
+        category = TweetCategory.find_by_category(category_name)
+        if category
+          @categories.push(category)
+        end
+      }
     end
-    
-    Tweet.use_category(@category)
 
     @endtime = 2.minutes.ago.utc.change(:sec => 0)
     @starttime = 122.minutes.ago.utc.change(:sec => 0)
 
     if !params[:starttime].nil?
       @starttime = DateTime.parse(params[:starttime]).utc
+    elsif !params[:since].nil?
+      @starttime = DateTime.parse(params[:since]).utc + 60 # return a minute after since
     end
 
     if !params[:endtime].nil?
       @endtime = DateTime.parse(params[:endtime]).utc
     end
-  end
-
-  def data
-    if !params[:eventid].nil?
-      event = Event.find_by_id(params[:eventid])
-      
-      @category = event.category_id
-      Tweet.use_category(@category)
-      @starttime = event.start_time
-      @endtime = event.end_time
-    else 
-      if params[:category].nil?
-        @category = TweetCategory.find_by_id(1)
-      else
-        @category = TweetCategory.find_by_category(params[:category])
-      end
-      Tweet.use_category(@category)
-
-      @endtime = 2.minutes.ago.utc.change(:sec => 0)
-      @starttime = 122.minutes.ago.utc.change(:sec => 0)
-
-      if !params[:starttime].nil?
-        @starttime = DateTime.parse(params[:starttime]).utc
-      elsif !params[:since].nil?
-        @starttime = DateTime.parse(params[:since]).utc + 60 # return a minute after since
-      end
-
-      if !params[:endtime].nil?
-        @endtime = DateTime.parse(params[:endtime]).utc
-      end
-    end
     
-    @volumes = calculate_and_cache_volumes(@category,@starttime,@endtime)
+    @volumes = get_volumes(@categories,@starttime,@endtime)
     
     render layout: nil
   end
 
   def realtime
-    if params[:category].nil?
-      @category = TweetCategory.find_by_id(1)
-    else
-      @category = TweetCategory.find_by_category(params[:category])
+    @categories = []
+    if !params[:categories].nil?
+      category_names = params[:categories].split(",")
+      category_names.each { |category_name| 
+      
+        category = TweetCategory.find_by_category(category_name)
+        if category
+          @categories.push(category)
+        end
+      }
     end
-    Tweet.use_category(@category)
   end
 
   def tweets_at_time
@@ -170,12 +162,42 @@ class GameViewController < ApplicationController
     
     return volumes
   end
-  
-  def assemble_two_volume_array(vol1, vol2)
+
+  def get_volumes(categories, starttime, endtime)
+    
+    starttime = starttime.to_datetime.change(:sec => 0)
+    endtime = endtime.to_datetime.change(:sec => 0)   
+    difference = (endtime.to_i - starttime.to_i) / 60
+
+    # initialize the volhash
+    volhash = {}
+    timecounter = starttime.clone
+    0.upto(difference) { |m| 
+      vol = {}
+      vol[:time] = timecounter
+      categories.each { |c| 
+        vol[c.category] = 0
+      }
+      
+      volhash[timecounter] = vol
+      timecounter = timecounter.advance(:minutes => 1)
+    }
+
+    categories.each { |category| 
+
+      cat_volumes = category.tweet_volumes.find(:all, :conditions => ["time >= ? AND time <= ?", starttime, endtime])
+      cat_volumes.each { |vol| 
+        
+        volhash[vol.time.to_datetime][category.category] += vol.count
+      }
+    }
+    
     volumes = []
-    vol1.each_with_index do |volitem, index|
-      volumes.push({:time => vol1[index].time, :count1 => vol1[index].count, :count2 => vol2[index].count})
-    end
+    timecounter = starttime.clone
+    0.upto(difference) { |m| 
+      volumes.push(volhash[timecounter])
+      timecounter = timecounter.advance(:minutes => 1)      
+    }
     
     return volumes
   end
@@ -217,4 +239,23 @@ class GameViewController < ApplicationController
       end
     end
   end
+  
+  private
+  
+  def earliest_date(date1,date2)
+    if !date1
+      date2
+    else
+      date1 < date2 ? date1 : date2
+    end
+  end
+  
+  def latest_date(date1,date2)
+    if !date1
+      date2
+    else
+      date1 > date2 ? date1 : date2
+    end
+  end
+  
 end

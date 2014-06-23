@@ -1,6 +1,6 @@
 <div class="row">
 	<p>
-		<%= link_to "Switch to Real Time View", :controller => "game_view", :action => "realtime", :category => @category.category %>		
+		<%= link_to "Switch to Real Time View", :controller => "game_view", :action => "realtime", :categories => concat_categories(@categories) %>		
 	</p>
 </div>
 
@@ -27,14 +27,14 @@
 	<div class="col-md-6">
 		<h4>Change viewing parameters</h4>
 		<%= form_tag(:controller => 'game_view', :action => :show) do -%>
-		<div class="form-group"><label for="category" class="control-label">Category: </label> <%= text_field_tag 'category', @category.category, :class => "form-control" %></div>
+		<div class="form-group"><label for="categories" class="control-label">Categories: </label> <%= text_field_tag 'categories', concat_categories(@categories), :class => "form-control" %></div>
 		<div class="form-group"><label for="starttime" class="control-label">Start Time: </label> <%= text_field_tag 'starttime', @starttime, :class => "form-control" %></div>
 		<div class="form-group"><label for="endtime" class="control-label">End Time: </label> <%= text_field_tag 'endtime', @endtime, :class => "form-control" %></div>
 		<div class="form-actions"><%= submit_tag 'Submit New Times', :class => 'btn btn-primary' %></div>
 		<% end -%>
 	</div>
 	<div class="col-md-6">
-		<% if current_user and current_user.admin? -%>
+		<% if current_user and current_user.admin? and @categories.length == 1 -%>
 			<h4>Create an Event</h4>
 			<%= form_for(@event) do |f| %>
 			  <%= f.hidden_field :category_id %>
@@ -54,7 +54,7 @@
 
 <script>
 $(function() {
-	d3.csv("<%= url_for(:controller => 'game_view', :action => 'data', :category => @category.category, :starttime => @starttime, :endtime => @endtime) %>", function(error,data) {
+	d3.csv("<%= url_for(:controller => 'game_view', :action => 'data', :categories => concat_categories(@categories), :starttime => @starttime, :endtime => @endtime) %>", function(error,data) {
 		
 		showGraph(error,data);
 		
@@ -64,8 +64,6 @@ $(function() {
 		        d0 = data[i - 1],
 		        d1 = data[i],
 		        d = x0 - d0.date > d1.date - x0 ? d1 : d0;
-		     
-			// $("#tweets").load('<%= url_for(:controller => 'game_view', :action => 'tweets_at_time', :category => @category.category) %>', 'time=' + encodeURIComponent(d.time.toString()))
 		});
 	});
 });

@@ -1,4 +1,4 @@
-time,volume
+time,<%= concat_categories(@categories) %>
 <% for volitem in @volumes -%>
-<%= volitem.time.strftime("%m-%d-%Y %k:%M %z") %>,<%= volitem.count %>
+<%= concat_volumes(@categories,volitem) %>
 <% end -%>

@@ -1,5 +1,5 @@
 <p>
-	<%= link_to "Switch to Fixed View", :controller => "game_view", :action => "show", :category => @category.category %>
+	<%= link_to "Switch to Fixed View", :controller => "game_view", :action => "show", :categories => concat_categories(@categories) %>
 </p>
 
 <div class="row">
@@ -19,7 +19,7 @@
 function showRealtimeGraph() {
 	$("#graph svg g").empty();
 	
-	d3.csv("<%= url_for(:controller => 'game_view', :action => 'data', :category => @category.category) %>", function(error,data) {
+	d3.csv("<%= url_for(:controller => 'game_view', :action => 'data', :categories => concat_categories(@categories)) %>", function(error,data) {
 
 		showGraph(error,data);
 		
@@ -29,8 +29,6 @@ function showRealtimeGraph() {
 		        d0 = data[i - 1],
 		        d1 = data[i],
 		        d = x0 - d0.date > d1.date - x0 ? d1 : d0;
-		     
-			// $("#tweets").load('<%= url_for(:controller => 'game_view', :action => 'tweets_at_time', :category => @category.category) %>', 'time=' + encodeURIComponent(d.time.toString()))
 		});
 	});	
 }
