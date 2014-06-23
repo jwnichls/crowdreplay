@@ -32,4 +32,4 @@ gem 'omniauth-twitter'
 gem 'twitter'
 
 # To use debugger
-# gem 'debugger'
+# gem 'byebug'
