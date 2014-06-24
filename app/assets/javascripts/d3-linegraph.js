@@ -14,7 +14,7 @@ var parseDate = d3.time.format("%m-%d-%Y %H:%M %Z").parse,
 var labelVar = 'time';
 
 var color = d3.scale.ordinal()
-                    .range(["#001c9c","#d3c47c","#101b4d","#475003","#9c8305"]);
+                    .range(["#001c9c","#d3c47c","#205003","#9c3105","#101b4d"]);
 
 var x = null;
 var xAxis = null;
