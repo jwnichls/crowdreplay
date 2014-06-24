@@ -1,6 +1,7 @@
-// The following code modified from: 
+// The following code based on details from the following pages: 
 //		http://bl.ocks.org/mbostock/3883245
 //		http://bl.ocks.org/mbostock/3902569
+//		http://projects.delimited.io/experiments/multi-series/data/crunchbase-quarters.csv
 
 var margin = {top: 20, right: 75, bottom: 30, left: 75},
     width = 960 - margin.left - margin.right,
@@ -13,7 +14,7 @@ var parseDate = d3.time.format("%m-%d-%Y %H:%M %Z").parse,
 var labelVar = 'time';
 
 var color = d3.scale.ordinal()
-                    .range(["#001c9c","#101b4d","#475003","#9c8305","#d3c47c"]);
+                    .range(["#001c9c","#d3c47c","#101b4d","#475003","#9c8305"]);
 
 var x = null;
 var xAxis = null;
@@ -138,7 +139,25 @@ function showGraph(error, data) {
 	      .style("stroke", function (d) { return color(d.name); })
 	      .style("fill", "none");
 
-	
+	var legend = svg.selectAll('.series')
+	                .data(seriesData)
+	                .append('g')
+	                .attr('class', 'legend');
+
+	legend.append('rect')
+	      .attr('x', 30)
+	      .attr('y', function(d, i){ return i *  20;})
+	      .attr('width', 10)
+	      .attr('height', 10)
+	      .style('fill', function(d) { 
+	                        return color(d.name);
+	                     });
+
+	legend.append('text')
+	      .attr('x', 50)
+	      .attr('y', function(d, i){ return (i *  20) + 9;})
+	      .text(function(d){ return d.name; });
+		
 	var focusElems = varNames.map(function(n) {
 
 		var focus = svg.append("g")
@@ -147,7 +166,9 @@ function showGraph(error, data) {
 		               .style("display", "none");
 
 		focus.append("circle")
-		     .attr("r", 3.5);
+		     .attr("r", 3.5)
+			 .style("stroke", color(n))
+			 .style("fill", color(n));
 		
 		return focus;
 	});
