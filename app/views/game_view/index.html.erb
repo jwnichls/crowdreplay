@@ -34,20 +34,34 @@
 </p>
 <% end -%>
 
-<h2>Simultaneous Group Game Views</h2>
+<% if @current.length > 0 -%>
+<h2>Currently Recording Events</h2>
 
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>Group</th>
-      <th>Teams</th>
+      <th>Name</th>
+	  <% if current_user and current_user.admin? -%>
+	    <th></th>
+	  <% end -%>
     </tr>
   </thead>
+  <% @current.each do |current_event| -%>
   <tr>
-	<td><a href="http://crowdreplay.com/game_view/realtime?categories=Belgium,South%20Korea,Russia,Algeria">Group H</a></td>
-	<td>Belgium vs. South Korea, Russia vs. Algeria</td>
+    <td style="vertical-align: middle;"><%= link_to current_event.name, current_event.link_hash %></td>
+	<% if current_user and current_user.admin? -%>
+	  <td class="text-right">
+        <%= button_to "Destroy",
+                    event_path(current_event),
+                    :method => :delete,
+                    :data => { :confirm => 'Are you sure?' },
+                    :class => 'btn btn-mini btn-danger' %>
+      </td>
+	<% end -%>
   </tr>
+  <% end -%>
 </table>
+<% end -%>
 
 <h2>Previously Recorded Events</h2>
 
@@ -72,10 +86,10 @@
 	  <td class="text-right">
 	    <%= link_to t('.edit', :default => t("helpers.links.edit")),
                   edit_event_path(event), :class => 'btn btn-mini' %>
-        <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
-                    events_path(event),
+        <%= button_to "Destroy",
+                    event_path(event),
                     :method => :delete,
-                    :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                    :data => { :confirm => 'Are you sure?' },
                     :class => 'btn btn-mini btn-danger' %>
       </td>
 	<% end -%>

@@ -12,6 +12,28 @@
 </div>
 
 <div class="row">
+	<div class="col-md-6">
+		<h4>Change viewing parameters</h4>
+		<%= form_tag(:controller => 'game_view', :action => :realtime) do -%>
+		<div class="form-group"><label for="categories" class="control-label">Categories: </label> <%= text_field_tag 'categories', concat_categories(@categories), :class => "form-control" %></div>
+		<div class="form-actions"><%= submit_tag 'Update', :class => 'btn btn-primary' %></div>
+		<% end -%>
+	</div>
+	<div class="col-md-6">
+		<% if current_user and current_user.admin? -%>
+			<h4>Create an Event</h4>
+			<%= form_for(@event) do |f| %>
+			  <%= hidden_field_tag :categories, concat_categories(@categories) %>
+			  <%= f.hidden_field :realtime %>
+
+			  <div class="form-group"><%= f.label :name, :class => 'control-label' %> <%= f.text_field :name, :class => 'form-control' %></div>
+			  <div class="form-group"><%= f.submit 'Create Event', :class => 'btn btn-primary' %></div>
+			<% end -%>
+		<% end -%>
+	</div>
+</div>
+
+<div class="row">
 	<div id="tweets"></div>
 </div>
 

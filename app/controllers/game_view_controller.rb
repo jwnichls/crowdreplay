@@ -3,6 +3,7 @@ class GameViewController < ApplicationController
   def index
     @recorders = Recorder.find_all_by_running(true)
     @events = Event.find_all_by_realtime(false, :order => "start_time DESC")
+    @current = Event.find_all_by_realtime(true)
   end
   
   def show
@@ -85,6 +86,9 @@ class GameViewController < ApplicationController
 
   def realtime
     @categories = []
+    @event = Event.new
+    @event.realtime = true
+    
     if !params[:categories].nil?
       category_names = params[:categories].split(",")
       category_names.each { |category_name| 

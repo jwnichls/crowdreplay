@@ -8,6 +8,7 @@
   <%=h concat_categories(@event.tweet_categories) %>
 </p>
 
+<% if !@event.realtime -%>
 <p>
   <b>Start time:</b>
   <%=h @event.start_time.strftime("%b %d, %Y  %k:%M %Z") %>
@@ -17,6 +18,11 @@
   <b>End time:</b>
   <%=h @event.end_time.strftime("%b %d, %Y  %k:%M %Z") %>
 </p>
+<% else -%>
+<p>
+	<i>Realtime Event</i>
+</p>
+<% end -%>
 
 <% if current_user and current_user.admin? -%>
 	<%= link_to 'Edit', edit_event_path(@event) %>
