@@ -11,13 +11,18 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140618202631) do
+ActiveRecord::Schema.define(:version => 20140627040846) do
 
   create_table "events", :force => true do |t|
     t.string   "name"
-    t.integer  "category_id"
     t.datetime "start_time"
     t.datetime "end_time"
+    t.boolean  "realtime",   :default => false, :null => false
+  end
+
+  create_table "events_tweet_categories", :id => false, :force => true do |t|
+    t.integer "event_id"
+    t.integer "tweet_category_id"
   end
 
   create_table "rate_limits", :force => true do |t|
@@ -152,6 +157,34 @@ ActiveRecord::Schema.define(:version => 20140618202631) do
 
   add_index "tweets_5", ["created_at"], :name => "index_tweets_on_created_at"
   add_index "tweets_5", ["tweet_category_id"], :name => "index_tweets_on_tweet_category_id"
+
+  create_table "tweets_6", :force => true do |t|
+    t.string   "text"
+    t.datetime "created_at",                        :null => false
+    t.string   "screenname"
+    t.integer  "user_id"
+    t.datetime "updated_at",                        :null => false
+    t.string   "lang"
+    t.string   "json",              :limit => 7500
+    t.integer  "tweet_category_id"
+  end
+
+  add_index "tweets_6", ["created_at"], :name => "index_tweets_on_created_at"
+  add_index "tweets_6", ["tweet_category_id"], :name => "index_tweets_on_tweet_category_id"
+
+  create_table "tweets_7", :force => true do |t|
+    t.string   "text"
+    t.datetime "created_at",                        :null => false
+    t.string   "screenname"
+    t.integer  "user_id"
+    t.datetime "updated_at",                        :null => false
+    t.string   "lang"
+    t.string   "json",              :limit => 7500
+    t.integer  "tweet_category_id"
+  end
+
+  add_index "tweets_7", ["created_at"], :name => "index_tweets_on_created_at"
+  add_index "tweets_7", ["tweet_category_id"], :name => "index_tweets_on_tweet_category_id"
 
   create_table "users", :force => true do |t|
     t.string   "email",                                  :null => false

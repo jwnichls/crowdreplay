@@ -34,10 +34,10 @@
 		<% end -%>
 	</div>
 	<div class="col-md-6">
-		<% if current_user and current_user.admin? and @categories.length == 1 -%>
+		<% if current_user and current_user.admin? -%>
 			<h4>Create an Event</h4>
 			<%= form_for(@event) do |f| %>
-			  <%= f.hidden_field :category_id %>
+			  <%= hidden_field_tag :categories, concat_categories(@categories) %>
 			  <%= f.hidden_field :start_time %>
 			  <%= f.hidden_field :end_time %>
 

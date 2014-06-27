@@ -27,6 +27,7 @@ class EventsController < ApplicationController
   # GET /events/new.xml
   def new
     @event = Event.new
+    @categories = @event.tweet_categories
 
     respond_to do |format|
       format.html # new.html.erb
@@ -43,9 +44,11 @@ class EventsController < ApplicationController
   # POST /events.xml
   def create
     @event = Event.new(params[:event])
-
+    
     respond_to do |format|
       if @event.save
+        @event.add_categories(params[:categories])
+        
         format.html { redirect_to(@event, :notice => 'Event was successfully created.') }
         format.xml  { render :xml => @event, :status => :created, :location => @event }
       else

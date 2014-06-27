@@ -11,8 +11,8 @@
 			</div>
 
 			<div class="control-group">
-			    <%= f.label :categories, :class => 'control-label' %><br />
-			    <%= f.text_field :category_id, :class => 'form-control' %>
+			    <%= label_tag :categories, :class => 'control-label' %><br />
+			    <%= text_field_tag :categories, :class => 'form-control' %>
 			</div>
 
 			<div class="control-group">
@@ -23,6 +23,13 @@
 			<div class="control-group">
 			    <%= f.label :end_time, :class => 'control-label' %><br />
 			    <%= f.datetime_select :end_time, :class => 'form-control' %>
+			</div>
+
+			<div class="control-group">
+				<%= f.label :realtime do %>
+					<%= f.check_box :realtime %> 
+					Realtime
+				<% end -%>
 			</div>
 		
 			<div class="form-actions">

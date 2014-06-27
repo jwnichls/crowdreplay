@@ -2,7 +2,7 @@ class GameViewController < ApplicationController
   
   def index
     @recorders = Recorder.find_all_by_running(true)
-    @events = Event.find(:all, :order => "start_time DESC")
+    @events = Event.find_all_by_realtime(false, :order => "start_time DESC")
   end
   
   def show
@@ -47,7 +47,6 @@ class GameViewController < ApplicationController
       end
 
       @event = Event.new
-      @event.category_id = @categories[0].id
       @event.start_time = @starttime
       @event.end_time = @endtime
     end    
@@ -127,41 +126,6 @@ class GameViewController < ApplicationController
   end
   
   private
-  
-  def calculate_and_cache_volumes(category, starttime, endtime)
-    
-    starttime = starttime.change(:sec => 0)
-    endtime = endtime.change(:sec => 0)   
-    difference = (endtime.to_i - starttime.to_i) / 60
-
-    volumes = category.tweet_volumes.find(:all, :conditions => ["time >= ? AND time <= ?", starttime, endtime])
-    
-    timecounter = starttime.clone
-    volcounter = 0
-    0.upto(difference) { |m| 
-	
-      nexttime = timecounter.advance(:minutes => 1)
-
-      while volcounter < volumes.length and volumes[volcounter].time < timecounter
-        # somehow we ended up with more than one measurement at a time we already considered
-        volumes.delete_at(volcounter)        
-      end
-
-	    if volcounter >= volumes.length or volumes[volcounter].time > timecounter
-        vol = TweetVolume.new
-        vol.time = timecounter
-        vol.tweet_category_id = category.id
-        vol.count = 0
-        
-        volumes.insert(volcounter, vol)
-      end
-      
-	    volcounter = volcounter + 1
-      timecounter = nexttime
-    }
-    
-    return volumes
-  end
 
   def get_volumes(categories, starttime, endtime)
     
