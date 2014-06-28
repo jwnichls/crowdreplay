@@ -30,7 +30,7 @@
     <td style="vertical-align: middle;"><%= recorder.status %></td>
 	<td style="vertical-align: middle;">
 		<% if recorder.running -%>
-			<%= link_to 'View Data', :controller => "game_view", :action => "realtime", :category => recorder.category %>
+			<%= link_to 'View Data', :controller => "game_view", :action => "realtime", :categories => recorder.category %>
 		<% end -%>
 	</td>
 	<td class="text-right">
